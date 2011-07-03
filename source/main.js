@@ -1,12 +1,11 @@
 /*!
-  ICanHaz.js -- by @HenrikJoreteg
+  ICanHandlebarz.js -- by @ehntoo, based on ICanHaz.js by @HenrikJoreteg
 */
 /*global jQuery  */
-function ICanHaz() {
+function ICanHandlebarz() {
     var self = this;
     self.VERSION = "@VERSION@";
     self.templates = {};
-    self.partials = {};
     
     // public function for adding templates
     // We're enforcing uniqueness to avoid accidental template overwrites.
@@ -15,22 +14,28 @@ function ICanHaz() {
         if (self[name]) throw "Invalid name: " + name + ".";
         if (self.templates[name]) throw "Template \" + name + \" exists";
         
-        self.templates[name] = templateString;
+        self.templates[name] = Handlebars.compile(templateString);
         self[name] = function (data, raw) {
             data = data || {};
-            var result = Mustache.to_html(self.templates[name], data, self.partials);
-            return raw ? result : $(result);
-        };       
+            var result = self.templates[name](data);
+            return raw? result: $(result);
+        };
     };
     
     // public function for adding partials
     self.addPartial = function (name, templateString) {
-        if (self.partials[name]) {
-            throw "Partial \" + name + \" exists";
-        } else {
-            self.partials[name] = templateString;
-        }
+        if (Handlebars.partials[name]) throw "Partial \" + name + \" exists";
+        Handlebars.registerPartial(name, templateString);
     };
+
+    self.addHelper = function (name, func, args) {
+        if (Handlebars.helpers[name]) throw "Helper \" + name + \" exists";
+        if (typeof func === 'function') {
+            Handlebars.registerHelper(name, func);
+        } else {
+            Handlebars.registerHelper(name, new Function(args, func));
+        }
+    }
     
     // grabs templates from the DOM and caches them.
     // Loop through and add templates.
@@ -42,7 +47,14 @@ function ICanHaz() {
             var script = $((typeof a === 'number') ? b : a), // Zepto doesn't bind this
                 text = (''.trim) ? script.html().trim() : $.trim(script.html());
             
-            self[script.hasClass('partial') ? 'addPartial' : 'addTemplate'](script.attr('id'), text);
+            if (script.hasClass('partial')) {
+                self.addPartial(script.attr('id'), text);
+            } else if (script.hasClass('helper')) {
+                // Does this even work?
+                self.addHelper(script.attr('id'), text, script.attr('data-args'));
+            } else {
+                self.addTemplate(script.attr('id'), text);
+            }
             script.remove();
         });
     };
@@ -53,7 +65,7 @@ function ICanHaz() {
             delete self[key];
         }
         self.templates = {};
-        self.partials = {};
+        Handlebars.partials = {};
     };
     
     self.refresh = function () {
@@ -62,7 +74,7 @@ function ICanHaz() {
     };
 }
 
-window.ich = new ICanHaz();
+window.ich = new ICanHandlebarz();
 
 // init itself on document ready
 $(function () {

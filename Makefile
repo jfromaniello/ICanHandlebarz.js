@@ -2,12 +2,12 @@ SHELL = /bin/bash
 
 VERSION = $(shell cat version.txt;)
 
-COMPILER = /usr/local/bin/closure-compiler.jar
+COMPILER = /usr/share/java/closure-compiler/closure-compiler.jar
 
-ICH = ICanHaz.js
-ICH_MIN = ICanHaz.min.js
+ICH = ICanHandlebarz.js
+ICH_MIN = ICanHandlebarz.min.js
 
-BASE_FILES = source/mustache.js \
+BASE_FILES = source/handlebars.1.0.0.beta.3.js \
 	source/main.js
 
 all: normal min
