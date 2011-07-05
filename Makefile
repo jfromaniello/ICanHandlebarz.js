@@ -7,7 +7,7 @@ COMPILER = /usr/share/java/closure-compiler/closure-compiler.jar
 ICH = ICanHandlebarz.js
 ICH_MIN = ICanHandlebarz.min.js
 
-BASE_FILES = source/handlebars.1.0.0.beta.3.js \
+BASE_FILES = source/handlebars.js \
 	source/main.js
 
 all: normal min
