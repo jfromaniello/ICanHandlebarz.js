@@ -4,4 +4,8 @@ A simple/powerful approach for doing client-side templating, combining the simpl
 
 MIT Licensed
 
-ICanHandlebarz.js includes wycats's Handlebars.js (https://github.com/wycats/handlebars.js/).
+ICanHandlebarz.js and ICanHandlebarz.min.js includes wycats's Handlebars.js (https://github.com/wycats/handlebars.js/).
+
+ICanHandlebarz-no-handlebars.js and ICanHandlebarz-no-handlebars.min.js does not include Handlebars.js. You have to include by yourself in your pages.
+
+ICanHandlebarz depends on jquery or zepto.
