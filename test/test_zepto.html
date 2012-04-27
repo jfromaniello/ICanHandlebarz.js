@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>ICanHaz Tests?</title>
+        <title>ICanHandlebarz Tests?</title>
         <link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen" />
         <script src="zepto-0.3.min.js"></script>
         <script src="qunit/qunit.js"></script>
-        <script src="../ICanHaz.min.js"></script>
+        <script src="../ICanHandlebarz.js"></script>
         <script src="./ich_test.js"></script>
         
         <!-- Testing templates -->
@@ -21,8 +21,26 @@
         <script id="winnings" class="partial" type="text/html">
             You just won ${{value}} (which is ${{taxed_value}} after tax)
         </script>
+        <script id="listofpeople" type="text/html">
+            <ul>{{#people}}<li>{{> link}}</li>{{/people}}</ul>
+        </script>
+        <script id="link" class="partial" type="text/html">
+            <a href="/people/{{id}}">{{name}}</a>
+        </script>
         <script id="version" type="text/html">
-            ICanHaz Tests? YES! You're testing v{{ version }}
+            ICanHandlebarz Tests? YES! You're testing v{{ version }}
+        </script>
+        <script id="datetest" type="text/html">
+            This page last modified on {{{dateformat aspDate}}}
+        </script>
+        <script id="phonetest" type="text/html">
+            {{name}}, I've got your number: {{formatphonenumber phone}}
+        </script>
+        <script id="formatphonenumber" class="helper" data-args="phoneNumber" type="text/html">
+            //<![CDATA[ // Needed for XHTML validation, most likely.
+            phoneNumberString = phoneNumber.toString();
+            return phoneNumberString.substr(0,3) + '-' + phoneNumberString.substr(3,4);
+            //]]>
         </script>
         
         <script>

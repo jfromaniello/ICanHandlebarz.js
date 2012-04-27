@@ -2,40 +2,44 @@ SHELL = /bin/bash
 
 VERSION = $(shell cat version.txt;)
 
-COMPILER = /usr/share/java/closure-compiler/closure-compiler.jar
-
 ICH = ICanHandlebarz.js
 ICH_MIN = ICanHandlebarz.min.js
+ICH_NOMS = ICanHandlebarz-no-handlebars.js
+ICH_NOMS_MIN = ICanHandlebarz-no-handlebars.min.js
+MAIN_FILE = source/main.js
+MUSTACHE_FILE ?= source/handlebars.js/dist/handlebars.js
+BASE_FILES = $(MUSTACHE_FILE) $(MAIN_FILE)
 
-BASE_FILES = source/handlebars.js \
-	source/main.js
+all: $(MAKEHB) $(ICH) $(ICH_MIN) $(ICH_NOMS) $(ICH_NOMS_MIN)
 
-all: normal min
-
-normal: $(ICH)
-
-min: $(ICH_MIN)
+source/handlebars.js/dist/handlebars.js:
+	$(shell cd source/handlebars.js/; bundle install; rake;)
 
 $(ICH): $(BASE_FILES)
 	@@echo
 	@@echo "Building" $(ICH) "..."
 	@@cat source/intro.js | sed -e 's/@VERSION@/$(VERSION)/' > $(ICH)
-	@@echo "(function ($$) {" >> $(ICH)
+	@@echo "(function () {" >> $(ICH)
 	@@cat $(BASE_FILES) | sed -e 's/@VERSION@/$(VERSION)/' >> $(ICH)
-	@@echo "})(window.jQuery || window.Zepto);" >> $(ICH)
+	@@echo "})();" >> $(ICH)
 	@@echo $(ICH) "built."
-	@@echo
 
+$(ICH_NOMS): $(MAIN_FILE)
+	@@echo
+	@@echo "Building" $(ICH_NOMS) "..."
+	@@cat source/intro.js | sed -e 's/@VERSION@/$(VERSION)/' > $(ICH_NOMS)
+	@@echo "(function () {" >> $(ICH_NOMS)
+	@@cat $(MAIN_FILE) | sed -e 's/@VERSION@/$(VERSION)/' >> $(ICH_NOMS)
+	@@echo "})();" >> $(ICH_NOMS)
+	@@echo $(ICH_NOMS) "built."
 
 $(ICH_MIN): $(ICH)
-	@@echo
 	@@echo "Building" $(ICH_MIN) "..."
-ifdef COMPILER
-	@@java -jar $(COMPILER) --compilation_level SIMPLE_OPTIMIZATIONS --js=$(ICH) > $(ICH_MIN)
-	@@echo $(ICH_MIN) "built."
-else
-	@@echo $(ICH_MIN) "not built."
-	@@echo "    Google Closure complier required to build minified version."
-	@@echo "    Please point COMPILER variable in 'makefile' to the jar file."
-endif
-	@@echo
+	@@curl -s --data-urlencode 'js_code@ICanHandlebarz.js' --data-urlencode 'output_format=text' --data-urlencode 'output_info=compiled_code' http://closure-compiler.appspot.com/compile > $@
+
+$(ICH_NOMS_MIN): $(ICH_NOMS)
+	@@echo "Building" $(ICH_NOMS_MIN) "..."
+	@@curl -s --data-urlencode 'js_code@ICanHandlebarz-no-handlebars.js' --data-urlencode 'output_format=text' --data-urlencode 'output_info=compiled_code' http://closure-compiler.appspot.com/compile > $@
+
+clean:
+	@rm -f $(ICH) $(ICH_MIN) $(ICH_NOMS) $(ICH_NOMS_MIN)
