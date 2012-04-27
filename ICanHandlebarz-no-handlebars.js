@@ -25,6 +25,14 @@ function ICanHandlebarz() {
             var result = self.templates[name](data);
             return raw? result: $(result);
         };
+        self[name].each = function(data, raw){
+            var results = [], i;
+            for(i in data){
+                results.push(self[name](data[i], true));
+            }
+            var j = results.join("\n");
+            return raw? j : $(j);
+        };
     };
     
     // public function for adding partials
@@ -40,7 +48,7 @@ function ICanHandlebarz() {
         } else {
             Handlebars.registerHelper(name, new Function(args, func));
         }
-    }
+    };
     
     // grabs templates from the DOM and caches them.
     // Loop through and add templates.

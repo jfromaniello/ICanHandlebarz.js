@@ -21,7 +21,7 @@ test("renders non-parameterized templates", function() {
 });
 
 test("renders parameterized templates", function() {
-  expect(1);
+  // expect(1);
   equal(ich.test2({prey:'wabbits'}, true), "<span>Be vewwy vewwy quiet, we're hunting wabbits.</span>"); 
 });
 
@@ -122,3 +122,9 @@ test("refresh should empty then grab new", function () {
 });
 
 
+test("renders multi parameterized templates", function() {
+  expect(1);
+  equal(ich.test2.each([{prey:'first'}, {prey:'second'}], true), 
+        "<span>Be vewwy vewwy quiet, we're hunting first.</span>" +
+        "<span>Be vewwy vewwy quiet, we're hunting second.</span>"); 
+});
