@@ -66,4 +66,4 @@ will append to an element with id "my-container" this:
 License
 =======
 
-This is a fork of (Mitchell Johnson's ICanHandleBarz)[https://github.com/atomicobject/ICanHandlebarz.js] and is licensed under MIT.
+This is a fork of [Mitchell Johnson's ICanHandleBarz](https://github.com/atomicobject/ICanHandlebarz.js) and is licensed under MIT.
